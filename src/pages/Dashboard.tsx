@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { 
   User, Users, Server, Settings, LogOut, 
   Plus, Bell, Camera, Image as ImageIcon
@@ -19,7 +19,7 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   const fetchUserData = async () => {
-    if (!supabase) {
+    if (!isSupabaseConfigured) {
       setLoading(false);
       return;
     }

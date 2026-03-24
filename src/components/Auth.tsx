@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Loader2, AlertCircle } from 'lucide-react';
 
@@ -18,7 +18,7 @@ export const Auth: React.FC<AuthProps> = ({ isOpen, onClose, onSuccess }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    if (!supabase) {
+    if (!isSupabaseConfigured) {
       setError('Authentication is currently unavailable. Please check if your Supabase environment variables are configured correctly in .env');
       return;
     }
