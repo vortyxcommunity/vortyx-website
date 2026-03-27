@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Download, Smartphone, Shield, Zap, Users, MessageSquare,
-  Star, Lock, UserPlus, SquarePlus, Check, X,
+  Star, Lock, SquarePlus, Check, X,
   Mail, Crown, Ghost, Zap as ZapIcon, Heart, ShieldCheck
 } from 'lucide-react';
-import { Auth } from './components/Auth';
-import { useNavigate } from 'react-router-dom';
 
 const Landing: React.FC = () => {
   const [roleColor, setRoleColor] = useState('#2563eb');
   const [roleIcon, setRoleIcon] = useState('ShieldCheck');
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -41,7 +37,13 @@ const Landing: React.FC = () => {
       const asset = data.assets.find((a: any) => a.name.toLowerCase().endsWith('.exe'));
       
       if (asset && asset.browser_download_url) {
-        window.location.href = asset.browser_download_url;
+        // Direct download by creating a temporary link
+        const link = document.createElement('a');
+        link.href = asset.browser_download_url;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
         // Fallback to the releases page if no .exe is found
         window.location.href = 'https://github.com/vortyxcommunity/VORTYX-COMMUNITY/releases/latest';
@@ -67,7 +69,6 @@ const Landing: React.FC = () => {
           </div>
           <div className="hero-btns" style={{ marginTop: 0 }}>
             <a href="#features" className="btn-secondary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem' }}>Features</a>
-            <button onClick={() => setIsAuthOpen(true)} className="btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem' }}>Login</button>
             <a href="#" onClick={handleDownload} className="btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem' }}>Download</a>
           </div>
         </div>
@@ -309,9 +310,8 @@ const Landing: React.FC = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
               {[
                 { step: '01', icon: <Download />, title: 'Download & Install', desc: 'Grab the latest Windows installer and run it on your PC. The app will automatically set up everything for you.' },
-                { step: '02', icon: <UserPlus />, title: 'Create Your Account', desc: 'Securely register using your email. Customize your profile with a unique avatar and username.' },
-                { step: '03', icon: <SquarePlus />, title: 'Launch Your Space', desc: 'Click the "+" icon in the server sidebar to create your own server. Choose your theme and visibility.' },
-                { step: '04', icon: <MessageSquare />, title: 'Start Connecting', desc: 'Create channels, invite your friends with a code, and experience the next level of private chat.' },
+                { step: '02', icon: <SquarePlus />, title: 'Launch Your Space', desc: 'Open the app and click the "+" icon to create your own server. Choose your theme and visibility.' },
+                { step: '03', icon: <MessageSquare />, title: 'Start Connecting', desc: 'Create channels, invite your friends with a code, and experience the next level of private chat.' },
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -437,12 +437,6 @@ const Landing: React.FC = () => {
           </div>
         </div>
       </footer>
-
-      <Auth 
-        isOpen={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
-        onSuccess={() => navigate('/dashboard')} 
-      />
     </div>
   );
 };
